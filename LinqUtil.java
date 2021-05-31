@@ -16,8 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /*
  * linq查询
- * @date:  20171114
- * @author: yzh
+ * @date:  20181114
+ * @author: steven
  */
 public class LinqUtil {
 	private static final Logger logger = LoggerFactory.getLogger(LinqUtil.class);
@@ -252,4 +252,49 @@ public class LinqUtil {
     	});
         return factoryDevNos;
 	}
+	
+	/**
+     * @Description : list to string
+     * @param objects list 集合
+     * @return : java.lang.String
+     * @throws :
+     * @Date : 2020/5/15
+     */
+    public static String listToString(Iterable<?> objects) {
+        return listToString(objects, ", ");
+    }
+
+    public static String listToString(Iterable<?> objects, String joiner) {
+        if (objects == null) {
+            return "";
+        }
+        return listToString(objects, joiner, Object::toString);
+    }
+
+    public static <T> String listToString(Iterable<T> objects, Function<T, String> toStr) {
+        return listToString(objects, ", ", toStr);
+    }
+
+    public static <T> String listToString(Iterable<T> objects, String joiner, Function<T, String> toStr) {
+        StringBuilder sb = new StringBuilder();
+        listToString(sb, objects, joiner, toStr);
+        return sb.toString();
+    }
+
+    public static <T> void listToString(StringBuilder sb, Iterable<T> objects, String joiner) {
+        listToString(sb, objects, joiner, Objects::toString);
+    }
+
+    public static <T> void listToString(StringBuilder sb, Iterable<T> objects, String joiner, Function<T, String> toStr) {
+        if (objects == null) {
+            return;
+        }
+        Iterator<T> it = objects.iterator();
+        if (it.hasNext()) {
+            sb.append(toStr.apply(it.next()));
+        }
+        while (it.hasNext()) {
+            sb.append(joiner).append(toStr.apply(it.next()));
+        }
+    }
 }
